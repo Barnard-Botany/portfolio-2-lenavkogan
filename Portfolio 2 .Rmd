@@ -1,0 +1,164 @@
+---
+title: "Portfolio 2"
+output: html_notebook
+---
+```{r}
+library(BIEN)
+library(plyr)
+library(labdsv)
+library(vegan)
+```
+
+Now I will work on the county data aspect of the portfolio.
+
+```{r}
+library(BIEN)
+#As you know, you can obtain species occurrence data from the BIEN database, or from another even more comprehensive data base called gbif (gbif.org). Occurrence data is a type of abundance data, and it can also be used to figure out presence-absence data. 
+bronx <- BIEN_occurrence_county(country="United States", state="New York", county = "Bronx")
+head(bronx)
+```
+
+```{r}
+Nassau <- BIEN_occurrence_county(country="United States", state="New York", county = "Nassau")
+Nassau
+```
+```{r}
+Suffolk <- BIEN_occurrence_county(country="United States", state="New York", county = "Suffolk")
+Suffolk
+```
+
+Now, it's time to get the occurrence data for each of the counties.
+
+```{r}
+#occurence
+bronx_occ = bronx[c(1)]
+nassau_occ = Nassau[c(1)]
+suffolk_occ = Suffolk[c(1)]
+
+#abundance
+
+bronx_ab = count(bronx_occ)
+nassau_ab = count(nassau_occ)
+suffolk_ab = count(suffolk_occ)
+
+suffolk_occ 
+suffolk_ab
+
+
+
+```
+```{r}
+bronx_ab = data.frame("bronx", bronx_ab)
+nassau_ab = data.frame("nassau", nassau_ab)
+suffolk_ab = data.frame("suffolk", suffolk_ab)
+
+names(bronx_ab)<-c("ListID", "SpeciesID", "Freq")
+names(nassau_ab)<-c("ListID", "SpeciesID", "Freq")
+names(suffolk_ab)<-c("ListID", "SpeciesID", "Freq")
+
+bronx_ab
+nassau_ab
+suffolk_ab
+```
+
+Now I will bind all of the data frames of the three counties.
+
+```{r}
+countydata = rbind(bronx_ab, nassau_ab, suffolk_ab)
+countydata
+```
+
+```{r}
+countydata_matrix<-matrify(countydata)
+countydata_matrix
+```
+
+Now, I will be looking at the Simpson and Shannon diversity indices.
+
+```{r}
+simpson_index<-diversity(countydata_matrix, index = "simpson")
+shannon_index<-diversity(countydata_matrix, index = "shannon")
+simpson_index
+shannon_index
+```
+
+Both the simpson and shannon index numbers that we have calculated are very similar across different counties. This means that, compared to one another, there is not a lot of difference in biodiversity between the counties. This makes sense, seeing as we chose three counties that are all from a relatively similar geographic area. There are no signficant differences in biodiversity.
+
+Now, I will be comparing similarity between the three counties using the Bray and Jaccard index.
+
+```{r}
+bray_index = vegdist(countydata_matrix, "bray")
+jaccard_index = vegdist(countydata_matrix, "jaccard", binary=T)
+bray_index
+jaccard_index
+```
+
+According to the Bray index, the two sites are extremely dissimilar, because the numbers are close to one. Using the Bray-Curtis index, a zero means the two sites have identical composition, and a number of one means the two sites share no similarity. These results are pretty different from our earlier results (which suggests that the two data sets were actually pretty similar).
+
+```{r}
+one = read.csv("Portfolio 2  - 2.csv")
+one
+```
+
+```{r}
+one_species = paste(one$Scientific.Name)
+one_species
+```
+```{r}
+one_ab = count(one_species)
+one_ab = data.frame("Welikia_One", one_ab)
+names(one_ab)<-c("ListID", "SpeciesID", "Freq")
+one_ab
+```
+
+```{r}
+two = read.csv("Portfolio 2  - 3.csv")
+two
+```
+```{r}
+two_species = paste(two$Scientific.Name)
+two_species
+```
+```{r}
+two_ab = count(two_species)
+two_ab = data.frame("Welikia_Two", two_ab)
+names(two_ab)<-c("ListID", "SpeciesID", "Freq")
+two_ab
+```
+
+```{r}
+all_ab = rbind(one_ab, two_ab, three_ab)
+all_matrix = matrify(all_ab)
+all_matrix
+```
+
+```{r}
+simpson<-diversity(all_matrix, index = "simpson")
+shannon<-diversity(all_matrix, index = "shannon")
+print("Simpson Index: ", quote = FALSE)
+simpson
+print("Shannon Index: ", quote = FALSE)
+shannon
+jaccard = vegdist(all_matrix, "jaccard")
+print("Jaccard Index: ", quote = FALSE)
+jaccard
+bray = vegdist(all_matrix, "bray")
+print("Bray Index: ", quote = FALSE)
+bray
+```
+According to the Simposon and Shannon index, the datasets are pretty similar because the results have yielded a numbers are very similar across the three datasets. The numbers are also similar on the Jaccard Index. According to the Bray index, the two sites are pretty ssimilar, because the numbers are closer to zero. 
+```{r}
+three = read.csv("Portfolio 2  - List of Plants I consume.csv")
+three
+```
+```{r}
+three_species = paste(one$Scientific.Name)
+three_species
+```
+```{r}
+three_ab = count(three_species)
+three_ab = data.frame("Welikia_Three", three_ab)
+names(three_ab)<-c("ListID", "SpeciesID", "Freq")
+three_ab
+```
+
