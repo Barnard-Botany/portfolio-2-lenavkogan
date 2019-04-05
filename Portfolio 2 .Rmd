@@ -84,6 +84,8 @@ shannon_index
 
 Both the simpson and shannon index numbers that we have calculated are very similar across different counties. This means that, compared to one another, there is not a lot of difference in biodiversity between the counties. This makes sense, seeing as we chose three counties that are all from a relatively similar geographic area. There are no signficant differences in biodiversity.
 
+# It's important to note that the values computed from the Shannon and Simpson indices only tell you how diverse each area (in this case, county) is; it does NOT tell you how similar the biodiversity of the different areas is. For similarity measures, you need Bray-Curtis or Jaccard.
+
 Now, I will be comparing similarity between the three counties using the Bray and Jaccard index.
 
 ```{r}
@@ -93,7 +95,10 @@ bray_index
 jaccard_index
 ```
 
+
 According to the Bray index, the two sites are extremely dissimilar, because the numbers are close to one. Using the Bray-Curtis index, a zero means the two sites have identical composition, and a number of one means the two sites share no similarity. These results are pretty different from our earlier results (which suggests that the two data sets were actually pretty similar).
+
+# See how these values contradict your claims about "no significant differences in biodiversity" above? Earlier results didn't say they were similar TO EACH OTHER, just that they were both had similar levels of diversity when measured individually. For example, the Bronx could have had 300 species with good evenness, and Suffolk could have had 300 DIFFERENT species also with good evenness, and they would have equal measures of diversity, but this doesn't mean the species in each county are similar to each other.
 
 ```{r}
 one = read.csv("Portfolio 2  - 2.csv")
@@ -131,6 +136,8 @@ all_ab = rbind(one_ab, two_ab, three_ab)
 all_matrix = matrify(all_ab)
 all_matrix
 ```
+
+# You should reorganize this so that the reading in of your three_ab data comes before the index calculations.
 
 ```{r}
 simpson<-diversity(all_matrix, index = "simpson")
